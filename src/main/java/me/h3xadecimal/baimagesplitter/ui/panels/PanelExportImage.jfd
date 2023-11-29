@@ -1,0 +1,52 @@
+JFDML JFormDesigner: "8.0.4.0.266" Java: "17.0.7" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+			name: "this"
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridLayout ) {
+				"columns": 2
+			} ) {
+				name: "bottomBar"
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "btnExportSimple"
+					"text": "导出简单模式"
+					addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseClicked", "exportSimple", true ) )
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "btnExportManual"
+					"text": "导出手动模式"
+				} )
+			}, new FormLayoutConstraints( class java.lang.String ) {
+				"value": "South"
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridLayout ) {
+				"columns": 1
+				"rows": 5
+			} ) {
+				name: "pnExportProperty"
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridLayout ) {
+					"columns": 2
+				} ) {
+					name: "pnFormat"
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "lbFormat"
+						"text": "导出格式"
+					} )
+					add( new FormComponent( "javax.swing.JComboBox" ) {
+						name: "cbFormat"
+						auxiliary() {
+							"JavaCodeGenerator.typeParameters": "String"
+						}
+					} )
+				} )
+			}, new FormLayoutConstraints( class java.lang.String ) {
+				"value": "Center"
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 400, 300 )
+		} )
+	}
+}

@@ -1,0 +1,49 @@
+JFDML JFormDesigner: "8.0.4.0.266" Java: "17.0.7" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+			name: "this"
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridLayout ) {
+				"columns": 10
+			} ) {
+				name: "pnComponents"
+			}, new FormLayoutConstraints( class java.lang.String ) {
+				"value": "West"
+			} )
+			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+				name: "sp"
+				add( new FormComponent( "javax.swing.JList" ) {
+					name: "listAdded"
+					auxiliary() {
+						"JavaCodeGenerator.typeParameters": "String"
+					}
+				} )
+			}, new FormLayoutConstraints( class java.lang.String ) {
+				"value": "East"
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridLayout ) {
+				"columns": 1
+				"rows": 5
+			} ) {
+				name: "pnOperation"
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "btnRemoveSelected"
+					"text": "移除选中"
+					addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseClicked", "removeSelected", true ) )
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "btnClear"
+					"text": "清空"
+					addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseClicked", "clear", true ) )
+				} )
+			}, new FormLayoutConstraints( class java.lang.String ) {
+				"value": "Center"
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 665, 400 )
+		} )
+	}
+}
