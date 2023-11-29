@@ -8,7 +8,7 @@ object GitUtils {
 
     fun getBranch() = prop.getProperty("git.branch")
 
-    fun getAbbrev() = prop.getProperty("git.commit.abbrev")
+    fun getAbbrev() = prop.getProperty("git.commit.id.abbrev")
 
     fun getVersion() = prop.getProperty("git.build.version")
 
