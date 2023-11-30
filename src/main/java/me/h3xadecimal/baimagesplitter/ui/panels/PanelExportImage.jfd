@@ -17,6 +17,7 @@ new FormModel {
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "btnExportManual"
 					"text": "导出手动模式"
+					addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseClicked", "exportManual", true ) )
 				} )
 			}, new FormLayoutConstraints( class java.lang.String ) {
 				"value": "South"

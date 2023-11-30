@@ -51,6 +51,7 @@ public class PanelAddImage extends JPanel {
 
                 main.setCurrent(ImageIO.read(f));
                 image.setIcon(new ImageIcon(main.getCurrent()));
+                main.getManualSplit().refresh();
             } catch (Throwable t) {
                 main.logger.error("文件加载失败", t);
                 JOptionPane.showMessageDialog(this, "文件加载失败：\n" + t);

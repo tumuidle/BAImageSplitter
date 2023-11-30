@@ -5,11 +5,11 @@
 package me.h3xadecimal.baimagesplitter.ui.panels;
 
 import me.h3xadecimal.baimagesplitter.ui.windows.UiMain;
-import me.h3xadecimal.baimagesplitter.utils.parts.EnumImagePart;
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.*;
@@ -20,111 +20,182 @@ import javax.swing.*;
 public class PanelManualSplit extends JPanel {
     private final UiMain main;
 
-    private final List<EnumImagePart> current = new ArrayList<>();
+    private double scale = 1.0;
+    private Image scaledImg;
+    private final List<Integer> anchors = new ArrayList<>();
 
     public PanelManualSplit(UiMain main) {
         this.main = main;
         initComponents();
-
-        pnComponents.setLayout(new GridLayout(EnumImagePart.getEntries().size(), 1));
-        for (EnumImagePart part: EnumImagePart.getEntries()) {
-            JButton btn = new JButton(part.getDisplayName());
-            btn.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    current.add(part);
-                    updateList();
-                }
-            });
-            pnComponents.add(btn);
-        }
     }
 
-    private void updateList() {
-        listAdded.setModel(new AbstractListModel<>() {
+    void refresh() {
+        BufferedImage original = main.getCurrent();
+        scale = (double) (lbImage.getWidth()-slider.getWidth()) /original.getWidth();
+        int width = (int) Math.round(original.getWidth()*scale);
+        int height = (int) Math.round(scale*original.getHeight());
+        main.logger.info(String.format("scale=%s , width=%d , height=%d", scale, width, height));
+        scaledImg = original.getScaledInstance(width, height, Image.SCALE_FAST);
+        Icon ico = new ImageIcon(scaledImg);
+
+        lbImage.setIcon(ico);
+        lbImage.setSize(width, height);
+        slider.setMaximum(lbImage.getHeight());
+
+        anchors.clear();
+        refreshList();
+    }
+
+    private void refreshList() {
+        listCurrent.setModel(new AbstractListModel<>() {
             @Override
             public int getSize() {
-                return current.size();
+                return anchors.size();
             }
 
             @Override
             public String getElementAt(int index) {
-                return current.get(index).getDisplayName();
+                return String.valueOf(anchors.get(index));
             }
         });
     }
 
-    private void removeSelected(MouseEvent e) {
-        int ind = listAdded.getSelectedIndex();
-        if (ind != -1) {
-            current.remove(ind);
-            updateList();
-        }
+    private void refreshClick(MouseEvent e) {
+        refresh();
     }
 
-    private void clear(MouseEvent e) {
-        current.clear();
-        updateList();
+    private void addAnchor(MouseEvent e) {
+        anchors.add((int) ((lbImage.getHeight()-slider.getValue())/scale));
+        refreshList();
+    }
+
+    private void removeSelected(MouseEvent e) {
+        anchors.remove(listCurrent.getSelectedIndex());
+        refreshList();
+    }
+
+    public double getScale() {
+        return scale;
+    }
+
+    public List<Integer> getAnchors() {
+        return anchors;
+    }
+
+    private void removeAll(MouseEvent e) {
+        anchors.clear();
+        refreshList();
     }
 
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
-        pnComponents = new JPanel();
-        sp = new JScrollPane();
-        listAdded = new JList<>();
         pnOperation = new JPanel();
-        btnRemoveSelected = new JButton();
+        btnRefresh = new JButton();
+        btnAdd = new JButton();
+        btnRemove = new JButton();
         btnClear = new JButton();
+        spCurrent = new JScrollPane();
+        listCurrent = new JList<>();
+        spSplitter = new JScrollPane();
+        pnSplitter = new JPanel();
+        slider = new JSlider();
+        pnPreview = new JPanel();
+        lbImage = new JLabel();
 
         //======== this ========
         setLayout(new BorderLayout());
 
-        //======== pnComponents ========
-        {
-            pnComponents.setLayout(new GridLayout(1, 10));
-        }
-        add(pnComponents, BorderLayout.WEST);
-
-        //======== sp ========
-        {
-            sp.setViewportView(listAdded);
-        }
-        add(sp, BorderLayout.EAST);
-
         //======== pnOperation ========
         {
-            pnOperation.setLayout(new GridLayout(5, 1));
+            pnOperation.setLayout(new GridLayout(4, 1));
 
-            //---- btnRemoveSelected ----
-            btnRemoveSelected.setText("\u79fb\u9664\u9009\u4e2d");
-            btnRemoveSelected.addMouseListener(new MouseAdapter() {
+            //---- btnRefresh ----
+            btnRefresh.setText("\u5237\u65b0\u663e\u793a");
+            btnRefresh.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    refreshClick(e);
+                }
+            });
+            pnOperation.add(btnRefresh);
+
+            //---- btnAdd ----
+            btnAdd.setText("\u6dfb\u52a0\u951a\u70b9");
+            btnAdd.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    addAnchor(e);
+                }
+            });
+            pnOperation.add(btnAdd);
+
+            //---- btnRemove ----
+            btnRemove.setText("\u79fb\u9664\u9009\u4e2d");
+            btnRemove.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     removeSelected(e);
                 }
             });
-            pnOperation.add(btnRemoveSelected);
+            pnOperation.add(btnRemove);
 
             //---- btnClear ----
-            btnClear.setText("\u6e05\u7a7a");
+            btnClear.setText("\u6e05\u7a7a\u5168\u90e8");
             btnClear.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
-                    clear(e);
+                    removeAll(e);
                 }
             });
             pnOperation.add(btnClear);
         }
-        add(pnOperation, BorderLayout.CENTER);
+        add(pnOperation, BorderLayout.WEST);
+
+        //======== spCurrent ========
+        {
+            spCurrent.setViewportView(listCurrent);
+        }
+        add(spCurrent, BorderLayout.EAST);
+
+        //======== spSplitter ========
+        {
+
+            //======== pnSplitter ========
+            {
+                pnSplitter.setLayout(new BorderLayout());
+
+                //---- slider ----
+                slider.setOrientation(SwingConstants.VERTICAL);
+                pnSplitter.add(slider, BorderLayout.WEST);
+
+                //======== pnPreview ========
+                {
+                    pnPreview.setLayout(new BorderLayout());
+
+                    //---- lbImage ----
+                    lbImage.setText("text");
+                    pnPreview.add(lbImage, BorderLayout.CENTER);
+                }
+                pnSplitter.add(pnPreview, BorderLayout.CENTER);
+            }
+            spSplitter.setViewportView(pnSplitter);
+        }
+        add(spSplitter, BorderLayout.CENTER);
         // JFormDesigner - End of component initialization  //GEN-END:initComponents  @formatter:on
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables  @formatter:off
-    private JPanel pnComponents;
-    private JScrollPane sp;
-    private JList<String> listAdded;
     private JPanel pnOperation;
-    private JButton btnRemoveSelected;
+    private JButton btnRefresh;
+    private JButton btnAdd;
+    private JButton btnRemove;
     private JButton btnClear;
+    private JScrollPane spCurrent;
+    private JList<String> listCurrent;
+    private JScrollPane spSplitter;
+    private JPanel pnSplitter;
+    private JSlider slider;
+    private JPanel pnPreview;
+    private JLabel lbImage;
     // JFormDesigner - End of variables declaration  //GEN-END:variables  @formatter:on
 }

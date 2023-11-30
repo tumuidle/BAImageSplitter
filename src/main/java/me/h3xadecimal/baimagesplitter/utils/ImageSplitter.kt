@@ -31,4 +31,26 @@ object ImageSplitter {
 
         return images.toTypedArray()
     }
+
+    @JvmStatic
+    fun splitManual(img: BufferedImage, points: List<Int>): Array<BufferedImage> {
+        var current = 0
+        var images = mutableListOf<BufferedImage>()
+
+        logger.info("Source Image: ${img.width}*${img.height}")
+        for (p in points) {
+            val y = min(img.height, current)
+//            val height= if (current+p > img.height) {
+//                logger.info("Next Y value is bigger than height")
+//                img.height-current
+//            } else p-current
+            val height = p-current
+
+            logger.info("Splitting from (0,$y) to (${img.width}, ${current+height}), height=$height")
+            images.add(img.getSubimage(0, y, img.width, height))
+            current = p
+        }
+
+        return images.toTypedArray()
+    }
 }

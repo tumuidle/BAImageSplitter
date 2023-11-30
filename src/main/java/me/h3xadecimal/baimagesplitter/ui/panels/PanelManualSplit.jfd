@@ -6,16 +6,37 @@ new FormModel {
 		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
 			name: "this"
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridLayout ) {
-				"columns": 10
+				"columns": 1
+				"rows": 4
 			} ) {
-				name: "pnComponents"
+				name: "pnOperation"
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "btnRefresh"
+					"text": "刷新显示"
+					addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseClicked", "refreshClick", true ) )
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "btnAdd"
+					"text": "添加锚点"
+					addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseClicked", "addAnchor", true ) )
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "btnRemove"
+					"text": "移除选中"
+					addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseClicked", "removeSelected", true ) )
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "btnClear"
+					"text": "清空全部"
+					addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseClicked", "removeAll", true ) )
+				} )
 			}, new FormLayoutConstraints( class java.lang.String ) {
 				"value": "West"
 			} )
 			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
-				name: "sp"
+				name: "spCurrent"
 				add( new FormComponent( "javax.swing.JList" ) {
-					name: "listAdded"
+					name: "listCurrent"
 					auxiliary() {
 						"JavaCodeGenerator.typeParameters": "String"
 					}
@@ -23,20 +44,27 @@ new FormModel {
 			}, new FormLayoutConstraints( class java.lang.String ) {
 				"value": "East"
 			} )
-			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridLayout ) {
-				"columns": 1
-				"rows": 5
-			} ) {
-				name: "pnOperation"
-				add( new FormComponent( "javax.swing.JButton" ) {
-					name: "btnRemoveSelected"
-					"text": "移除选中"
-					addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseClicked", "removeSelected", true ) )
-				} )
-				add( new FormComponent( "javax.swing.JButton" ) {
-					name: "btnClear"
-					"text": "清空"
-					addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseClicked", "clear", true ) )
+			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+				name: "spSplitter"
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+					name: "pnSplitter"
+					add( new FormComponent( "javax.swing.JSlider" ) {
+						name: "slider"
+						"orientation": 1
+					}, new FormLayoutConstraints( class java.lang.String ) {
+						"value": "West"
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+						name: "pnPreview"
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "lbImage"
+							"text": "text"
+						}, new FormLayoutConstraints( class java.lang.String ) {
+							"value": "Center"
+						} )
+					}, new FormLayoutConstraints( class java.lang.String ) {
+						"value": "Center"
+					} )
 				} )
 			}, new FormLayoutConstraints( class java.lang.String ) {
 				"value": "Center"

@@ -12,6 +12,8 @@ import me.h3xadecimal.baimagesplitter.utils.ImageSplitter;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
@@ -89,6 +91,21 @@ public class PanelExportImage extends JPanel {
         export(ImageSplitter.splitSimple(source, count));
     }
 
+    private void exportManual(MouseEvent e) {
+        BufferedImage source = main.getCurrent();
+        if (source == null) {
+            JOptionPane.showMessageDialog(this, "未选择图像");
+            return;
+        }
+
+        List<Integer> points = main.getManualSplit().getAnchors();
+        points.add(source.getHeight());
+        main.logger.info("已选中 " + points.size() + "个锚点");
+
+        main.logger.info("开始输出");
+        export(ImageSplitter.splitManual(source, points));
+    }
+
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
         bottomBar = new JPanel();
@@ -118,6 +135,12 @@ public class PanelExportImage extends JPanel {
 
             //---- btnExportManual ----
             btnExportManual.setText("\u5bfc\u51fa\u624b\u52a8\u6a21\u5f0f");
+            btnExportManual.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    exportManual(e);
+                }
+            });
             bottomBar.add(btnExportManual);
         }
         add(bottomBar, BorderLayout.SOUTH);
