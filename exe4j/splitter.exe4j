@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<exe4j version="9.0" transformSequenceNumber="3">
+  <directoryPresets config="E:/Java/BAImageSplitter/exe4j" />
+  <application name="BAImageSplitter" distributionSourceDir="E:/Java/BAImageSplitter/exe4j" />
+  <executable name="BAImageSplitter" wrapperType="embed" redirectStderr="false" executableMode="gui" singleInstance="true" checkConsoleParameter="true">
+    <messageSet>
+      <message id="MessageBoxTitle" text="错误" />
+      <message id="NoJvmFound" text="exe4j不喜欢你的Java设置，检查环境变量或从此处下载&#xA;https://adoptium.net/zh-CN/temurin/releases/" />
+      <message id="JvmInPath" text="Java可能损坏" />
+      <message id="MainClassNotFound" text="无法加载主类" />
+      <message id="MainMethodNotFound" text="无法启动入口方法" />
+    </messageSet>
+  </executable>
+  <java mainClass="me.h3xadecimal.baimagesplitter.Main" minVersion="17" allowBetaVM="true">
+    <classPath>
+      <archive location="E:/Java/BAImageSplitter/exe4j/bin.jar" />
+    </classPath>
+  </java>
+</exe4j>
