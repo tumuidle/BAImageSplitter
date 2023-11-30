@@ -9,6 +9,7 @@ import me.h3xadecimal.baimagesplitter.ui.panels.PanelAddImage;
 import me.h3xadecimal.baimagesplitter.ui.panels.PanelExportImage;
 import me.h3xadecimal.baimagesplitter.ui.panels.PanelManualSplit;
 import me.h3xadecimal.baimagesplitter.ui.panels.PanelSimpleSplit;
+import me.h3xadecimal.baimagesplitter.utils.Resources;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -40,6 +41,8 @@ public class UiMain extends JFrame {
         tp.add("手动剪裁", manualSplit);
         exportImage = new PanelExportImage(this);
         tp.add("导出图像", exportImage);
+
+        setIconImage(Resources.getIcon());
     }
 
     private void close(WindowEvent e) {
