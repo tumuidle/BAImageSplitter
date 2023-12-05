@@ -7,12 +7,11 @@ package me.h3xadecimal.baimagesplitter.ui.panels;
 import java.awt.event.*;
 import me.h3xadecimal.baimagesplitter.Application;
 import me.h3xadecimal.baimagesplitter.ui.windows.UiMain;
-import me.h3xadecimal.baimagesplitter.utils.ImageSplitter;
+import me.h3xadecimal.baimagesplitter.utils.ImageProcessor;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -28,6 +27,7 @@ public class PanelExportImage extends JPanel {
         initComponents();
 
         cbFormat.addItem("png");
+        cbFormat.addItem("jpg");
     }
 
     private void export(BufferedImage[] images) {
@@ -88,7 +88,7 @@ public class PanelExportImage extends JPanel {
         }
 
         main.logger.info("开始输出");
-        export(ImageSplitter.splitSimple(source, count));
+        export(ImageProcessor.splitSimple(source, count));
     }
 
     private void exportManual(MouseEvent e) {
@@ -103,7 +103,7 @@ public class PanelExportImage extends JPanel {
         main.logger.info("已选中 " + points.size() + "个锚点");
 
         main.logger.info("开始输出");
-        export(ImageSplitter.splitManual(source, points));
+        export(ImageProcessor.splitManual(source, points));
     }
 
     private void initComponents() {
