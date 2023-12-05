@@ -10,6 +10,7 @@ import me.h3xadecimal.baimagesplitter.ui.windows.UiMain;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -18,6 +19,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  * @author ht_ge
  */
 public class PanelAddImage extends JPanel {
+    private File lastSelect = null;
     private final UiMain main;
 
     public PanelAddImage(UiMain main) {
@@ -49,9 +51,8 @@ public class PanelAddImage extends JPanel {
                     JOptionPane.showMessageDialog(this, "出现" + warns + "个警告：" + warnMsg);
                 }
 
-                main.setCurrent(ImageIO.read(f));
-                image.setIcon(new ImageIcon(main.getCurrent()));
-                main.getManualSplit().refresh();
+                lastSelect = f;
+                reloadLastSelected();
             } catch (Throwable t) {
                 main.logger.error("文件加载失败", t);
                 JOptionPane.showMessageDialog(this, "文件加载失败：\n" + t);
@@ -59,6 +60,12 @@ public class PanelAddImage extends JPanel {
         } else {
             main.logger.info("未选择文件");
         }
+    }
+
+    public void reloadLastSelected() throws IOException {
+        main.setCurrent(ImageIO.read(lastSelect));
+        image.setIcon(new ImageIcon(main.getCurrent()));
+        main.getManualSplit().refresh();
     }
 
     private void initComponents() {

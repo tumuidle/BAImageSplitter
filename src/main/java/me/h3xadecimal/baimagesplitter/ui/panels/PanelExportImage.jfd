@@ -42,6 +42,27 @@ new FormModel {
 						}
 					} )
 				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridLayout ) {
+					"columns": 3
+				} ) {
+					name: "pnWatermark"
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "lbWatermark"
+						"text": "添加水印，留空不使用"
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "btnSelectWMFile"
+						"text": "选择图像"
+						addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseClicked", "selectWmFile", true ) )
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "lbWmFile"
+					} )
+				} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "cbUseObfuscation"
+					"text": "创建干扰图像"
+				} )
 			}, new FormLayoutConstraints( class java.lang.String ) {
 				"value": "Center"
 			} )

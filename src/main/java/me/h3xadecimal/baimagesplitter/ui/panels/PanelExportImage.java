@@ -12,6 +12,8 @@ import me.h3xadecimal.baimagesplitter.utils.ImageProcessor;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -22,6 +24,8 @@ import javax.swing.*;
 public class PanelExportImage extends JPanel {
     private final UiMain main;
 
+    private BufferedImage watermark = null;
+
     public PanelExportImage(UiMain main) {
         this.main = main;
         initComponents();
@@ -31,6 +35,16 @@ public class PanelExportImage extends JPanel {
     }
 
     private void export(BufferedImage[] images) {
+        main.logger.info("正在重载图像");
+        try {
+            main.getAddImage().reloadLastSelected();
+        } catch (Throwable t) {
+            main.logger.warn("尝试重载失败，将使用已加载的图像", t);
+        }
+
+        main.logger.info("正在导出");
+        List<BufferedImage> proceed = new ArrayList<>(List.of(images));
+
         String format = (String) cbFormat.getSelectedItem();
 
         JFileChooser chooser = new JFileChooser();
@@ -46,11 +60,19 @@ public class PanelExportImage extends JPanel {
                 return;
             }
 
+            for (BufferedImage bi: images) {
+                if (watermark != null) ImageProcessor.createWaterMark(watermark, 100, bi);
+                if (cbUseObfuscation.isSelected()) {
+                    ImageProcessor.createObfuscation(bi);
+                    System.gc();
+                }
+            }
+
             int errors = 0;
             StringBuilder err = new StringBuilder();
             err.append("导出完成，但出现").append(errors).append("个错误：");
-            for (int i = 0; i < images.length; i++) {
-                BufferedImage bi = images[i];
+            for (int i = 0; i < proceed.size(); i++) {
+                BufferedImage bi = proceed.get(i);
                 File f = new File(dir, i + "." + format);
                 try {
                     ImageIO.write(bi, format, f);
@@ -106,6 +128,31 @@ public class PanelExportImage extends JPanel {
         export(ImageProcessor.splitManual(source, points));
     }
 
+    private void selectWmFile(MouseEvent e) {
+        main.logger.info("打开水印图像选择");
+        JFileChooser chooser = new JFileChooser();
+        chooser.setDialogTitle("选择水印图像");
+        chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        chooser.setCurrentDirectory(Application.INSTANCE.getRunningDir());
+        chooser.setMultiSelectionEnabled(false);
+        chooser.showOpenDialog(this);
+
+        File sel = chooser.getSelectedFile();
+        if (sel != null) {
+            main.logger.info("已选择 " + sel.getAbsolutePath());
+
+            try {
+                watermark = ImageIO.read(sel);
+                lbWmFile.setIcon(new ImageIcon(watermark));
+            } catch (Throwable t) {
+                main.logger.warn("水印图像读取失败", t);
+                JOptionPane.showMessageDialog(this, "水印图像读取失败：\n" + t);
+            }
+        } else {
+            main.logger.info("未选择水印图像");
+        }
+    }
+
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
         bottomBar = new JPanel();
@@ -115,6 +162,11 @@ public class PanelExportImage extends JPanel {
         pnFormat = new JPanel();
         lbFormat = new JLabel();
         cbFormat = new JComboBox<>();
+        pnWatermark = new JPanel();
+        lbWatermark = new JLabel();
+        btnSelectWMFile = new JButton();
+        lbWmFile = new JLabel();
+        cbUseObfuscation = new JCheckBox();
 
         //======== this ========
         setLayout(new BorderLayout());
@@ -159,6 +211,31 @@ public class PanelExportImage extends JPanel {
                 pnFormat.add(cbFormat);
             }
             pnExportProperty.add(pnFormat);
+
+            //======== pnWatermark ========
+            {
+                pnWatermark.setLayout(new GridLayout(1, 3));
+
+                //---- lbWatermark ----
+                lbWatermark.setText("\u6dfb\u52a0\u6c34\u5370\uff0c\u7559\u7a7a\u4e0d\u4f7f\u7528");
+                pnWatermark.add(lbWatermark);
+
+                //---- btnSelectWMFile ----
+                btnSelectWMFile.setText("\u9009\u62e9\u56fe\u50cf");
+                btnSelectWMFile.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        selectWmFile(e);
+                    }
+                });
+                pnWatermark.add(btnSelectWMFile);
+                pnWatermark.add(lbWmFile);
+            }
+            pnExportProperty.add(pnWatermark);
+
+            //---- cbUseObfuscation ----
+            cbUseObfuscation.setText("\u521b\u5efa\u5e72\u6270\u56fe\u50cf");
+            pnExportProperty.add(cbUseObfuscation);
         }
         add(pnExportProperty, BorderLayout.CENTER);
         // JFormDesigner - End of component initialization  //GEN-END:initComponents  @formatter:on
@@ -172,5 +249,10 @@ public class PanelExportImage extends JPanel {
     private JPanel pnFormat;
     private JLabel lbFormat;
     private JComboBox<String> cbFormat;
+    private JPanel pnWatermark;
+    private JLabel lbWatermark;
+    private JButton btnSelectWMFile;
+    private JLabel lbWmFile;
+    private JCheckBox cbUseObfuscation;
     // JFormDesigner - End of variables declaration  //GEN-END:variables  @formatter:on
 }
