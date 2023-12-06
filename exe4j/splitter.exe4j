@@ -10,6 +10,7 @@
       <message id="MainClassNotFound" text="无法加载主类" />
       <message id="MainMethodNotFound" text="无法启动入口方法" />
     </messageSet>
+    <versionInfo include="true" fileVersion="1.1.0" internalName="BAImageSplitter" companyName="H3xadecimal" productVersion="1.1.0-de08e4c8" />
   </executable>
   <java mainClass="me.h3xadecimal.baimagesplitter.Main" minVersion="17" allowBetaVM="true">
     <classPath>
