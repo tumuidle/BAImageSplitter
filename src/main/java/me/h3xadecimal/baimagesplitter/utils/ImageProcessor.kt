@@ -1,6 +1,7 @@
 package me.h3xadecimal.baimagesplitter.utils
 
 import org.apache.logging.log4j.LogManager
+import java.awt.AlphaComposite
 import java.awt.BasicStroke
 import java.awt.Color
 import java.awt.Image
@@ -77,6 +78,9 @@ object ImageProcessor {
         }
         logger.info("已创建 ${locations.size} 个水印点")
 
+        val oComp = graphics.composite
+        graphics.composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f)
+
         for (l in locations) {
             logger.info("绘制水印 (${l.x}, ${l.y})")
             graphics.drawImage(scaled, l.x, l.y
@@ -85,6 +89,7 @@ object ImageProcessor {
             }
         }
 
+        graphics.composite = oComp
         graphics.dispose()
         logger.info("绘制完成")
         return img
@@ -93,7 +98,13 @@ object ImageProcessor {
     @JvmStatic
     fun rdColor(): Color {
         val rd = Random()
-        return Color(rd.nextInt(255), rd.nextInt(255), rd.nextInt(255), rd.nextInt(255))
+        return rdColor(rd.nextInt(255))
+    }
+
+    @JvmStatic
+    fun rdColor(alpha: Int): Color {
+        val rd = Random()
+        return Color(rd.nextInt(255), rd.nextInt(255), rd.nextInt(255), alpha)
     }
 
     @JvmStatic
@@ -129,7 +140,7 @@ object ImageProcessor {
         for (x in 0 until img.width) {
             for (y in 0 until img.height) {
                 if (y % 2 == 0 && x % 2 == 0) {
-                    gr.color = rdColor()
+                    gr.color = rdColor(255)
                     gr.drawLine(x, y, x, y)
                 }
             }
