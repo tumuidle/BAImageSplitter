@@ -42,7 +42,6 @@ public class PanelManualSplit extends JPanel {
         lbImage.setSize(width, height);
         slider.setMaximum(lbImage.getHeight());
 
-        anchors.clear();
         refreshList();
     }
 
