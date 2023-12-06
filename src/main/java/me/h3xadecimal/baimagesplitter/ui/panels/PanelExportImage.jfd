@@ -59,9 +59,20 @@ new FormModel {
 						name: "lbWmFile"
 					} )
 				} )
-				add( new FormComponent( "javax.swing.JCheckBox" ) {
-					name: "cbUseObfuscation"
-					"text": "创建干扰图像"
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridLayout ) {
+					"columns": 2
+				} ) {
+					name: "pnObfuscation"
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "lbObfuscation"
+						"text": "图像混淆"
+					} )
+					add( new FormComponent( "javax.swing.JComboBox" ) {
+						name: "cbObfuscation"
+						auxiliary() {
+							"JavaCodeGenerator.typeParameters": "String"
+						}
+					} )
 				} )
 			}, new FormLayoutConstraints( class java.lang.String ) {
 				"value": "Center"

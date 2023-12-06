@@ -3,15 +3,10 @@ package me.h3xadecimal.baimagesplitter.utils
 import org.apache.logging.log4j.LogManager
 import java.awt.BasicStroke
 import java.awt.Color
-import java.awt.Graphics
 import java.awt.Image
 import java.awt.Point
 import java.awt.image.BufferedImage
-import java.awt.image.ImageObserver
-import java.io.ByteArrayOutputStream
 import java.util.Random
-import javax.imageio.ImageIO
-import kotlin.math.log
 import kotlin.math.min
 
 object ImageProcessor {
@@ -102,7 +97,7 @@ object ImageProcessor {
     }
 
     @JvmStatic
-    fun createObfuscation(img: BufferedImage) {
+    fun createRandomLineObfuscation(img: BufferedImage) {
         val count = img.height/30
         val gr = img.createGraphics()
 
@@ -120,9 +115,26 @@ object ImageProcessor {
             val y3 = rd3.nextInt(img.height)
 
             gr.color = rdColor()
-            gr.stroke = BasicStroke(rd.nextFloat(10f))
+            gr.stroke = BasicStroke(rd.nextFloat(5f))
             gr.drawLine(x1, x2, y1, y2)
             gr.drawLine(x3, y3, x3, y3)
         }
+    }
+
+    @JvmStatic
+    fun createDotObfuscation(img: BufferedImage) {
+        val gr = img.createGraphics()
+        gr.stroke = BasicStroke(1f)
+
+        for (x in 0 until img.width) {
+            for (y in 0 until img.height) {
+                if (y % 2 == 0 && x % 2 == 0) {
+                    gr.color = rdColor()
+                    gr.drawLine(x, y, x, y)
+                }
+            }
+        }
+
+        gr.dispose()
     }
 }

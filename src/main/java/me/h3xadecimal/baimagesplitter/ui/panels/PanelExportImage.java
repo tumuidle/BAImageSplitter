@@ -13,7 +13,6 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -32,6 +31,10 @@ public class PanelExportImage extends JPanel {
 
         cbFormat.addItem("png");
         cbFormat.addItem("jpg");
+
+        cbObfuscation.addItem("关闭");
+        cbObfuscation.addItem("随机线条");
+        cbObfuscation.addItem("点阵");
     }
 
     private void export(BufferedImage[] images) {
@@ -62,9 +65,11 @@ public class PanelExportImage extends JPanel {
 
             for (BufferedImage bi: images) {
                 if (watermark != null) ImageProcessor.createWaterMark(watermark, 100, bi);
-                if (cbUseObfuscation.isSelected()) {
-                    ImageProcessor.createObfuscation(bi);
-                    System.gc();
+                switch ((String) cbObfuscation.getSelectedItem()) {
+                    case "关闭" -> {}
+                    case "随机线条" -> ImageProcessor.createRandomLineObfuscation(bi);
+                    case "点阵" -> ImageProcessor.createDotObfuscation(bi);
+                    default -> main.logger.warn("找不到指定的混淆模式：" + cbObfuscation.getSelectedItem());
                 }
             }
 
@@ -166,7 +171,9 @@ public class PanelExportImage extends JPanel {
         lbWatermark = new JLabel();
         btnSelectWMFile = new JButton();
         lbWmFile = new JLabel();
-        cbUseObfuscation = new JCheckBox();
+        pnObfuscation = new JPanel();
+        lbObfuscation = new JLabel();
+        cbObfuscation = new JComboBox<>();
 
         //======== this ========
         setLayout(new BorderLayout());
@@ -233,9 +240,16 @@ public class PanelExportImage extends JPanel {
             }
             pnExportProperty.add(pnWatermark);
 
-            //---- cbUseObfuscation ----
-            cbUseObfuscation.setText("\u521b\u5efa\u5e72\u6270\u56fe\u50cf");
-            pnExportProperty.add(cbUseObfuscation);
+            //======== pnObfuscation ========
+            {
+                pnObfuscation.setLayout(new GridLayout(1, 2));
+
+                //---- lbObfuscation ----
+                lbObfuscation.setText("\u56fe\u50cf\u6df7\u6dc6");
+                pnObfuscation.add(lbObfuscation);
+                pnObfuscation.add(cbObfuscation);
+            }
+            pnExportProperty.add(pnObfuscation);
         }
         add(pnExportProperty, BorderLayout.CENTER);
         // JFormDesigner - End of component initialization  //GEN-END:initComponents  @formatter:on
@@ -253,6 +267,8 @@ public class PanelExportImage extends JPanel {
     private JLabel lbWatermark;
     private JButton btnSelectWMFile;
     private JLabel lbWmFile;
-    private JCheckBox cbUseObfuscation;
+    private JPanel pnObfuscation;
+    private JLabel lbObfuscation;
+    private JComboBox<String> cbObfuscation;
     // JFormDesigner - End of variables declaration  //GEN-END:variables  @formatter:on
 }
