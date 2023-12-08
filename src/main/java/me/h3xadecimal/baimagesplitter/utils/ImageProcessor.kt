@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager
 import java.awt.AlphaComposite
 import java.awt.BasicStroke
 import java.awt.Color
+import java.awt.Font
 import java.awt.Image
 import java.awt.Point
 import java.awt.image.BufferedImage
@@ -147,5 +148,28 @@ object ImageProcessor {
         }
 
         gr.dispose()
+    }
+
+    @JvmStatic
+    fun createUnicodeObfuscation(img: BufferedImage) {
+        val gr = img.createGraphics()
+        val font = Font("Arial", Font.PLAIN, 12)
+
+        gr.font = font
+
+        var currentY = gr.fontMetrics.height
+        var currentX = 0
+
+        while (currentY < img.height) {
+            logger.info("Drawing on Y=$currentY")
+            while (currentX < img.width) {
+                val ch = Dictionary.randomChar()
+                gr.color = rdColor(200)
+                gr.drawString(ch.toString(), currentX, currentY)
+                currentX += gr.fontMetrics.charWidth(ch)
+            }
+            currentX = 0
+            currentY += gr.fontMetrics.height
+        }
     }
 }

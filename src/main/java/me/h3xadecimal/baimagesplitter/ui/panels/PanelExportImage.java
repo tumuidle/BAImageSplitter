@@ -35,6 +35,7 @@ public class PanelExportImage extends JPanel {
         cbObfuscation.addItem("关闭");
         cbObfuscation.addItem("随机线条");
         cbObfuscation.addItem("点阵");
+        cbObfuscation.addItem("字符");
     }
 
     private void export(BufferedImage[] images) {
@@ -69,6 +70,7 @@ public class PanelExportImage extends JPanel {
                     case "关闭" -> {}
                     case "随机线条" -> ImageProcessor.createRandomLineObfuscation(bi);
                     case "点阵" -> ImageProcessor.createDotObfuscation(bi);
+                    case "字符" -> ImageProcessor.createUnicodeObfuscation(bi);
                     default -> main.logger.warn("找不到指定的混淆模式：" + cbObfuscation.getSelectedItem());
                 }
             }
